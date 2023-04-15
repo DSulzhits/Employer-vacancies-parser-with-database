@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "course-work-5"
+version = "0.1.0"
+description = ""
+authors = ["DSulzhits <dsulzhits@gmail.com>"]
+readme = "README.md"
+packages = [{include = "course_work_5"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+requests = "^2.28.2"
+python-dotenv = "^1.0.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

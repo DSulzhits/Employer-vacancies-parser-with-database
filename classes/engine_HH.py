@@ -64,4 +64,7 @@ class HH:
 
 
 hh = HH('python developer')
-print(hh.get_request())
+hh1 = hh.get_request()
+
+for row in hh1:
+    print(row)

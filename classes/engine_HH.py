@@ -1,5 +1,5 @@
 import requests
-import json
+# import json
 
 
 class HH:
@@ -48,9 +48,20 @@ class HH:
                 vacancy_dict['salary_from'] = 0
             elif vacancy_dict['salary_to'] is None:
                 vacancy_dict['salary_to'] = vacancy_dict['salary_from']
-            self.vacancies_dicts.append(vacancy_dict)
+            try:
+                if "<highlighttext>" and "</highlighttext>" in vacancy_dict['requirement']:
+                    vacancy_dict['requirement'] = vacancy_dict['requirement'].replace("<highlighttext>", "")
+                    vacancy_dict['requirement'] = vacancy_dict['requirement'].replace("</highlighttext>", "")
+            except TypeError:
+                vacancy_dict['requirement'] = vacancy_dict['requirement']
 
-        with open(f'{self.vacancy}_hh_ru.json', 'w', encoding='UTF-8') as file:
-            json.dump(self.vacancies_dicts, file, indent=2, ensure_ascii=False)
-        print(f"Отбор осуществляется из {len(self.vacancies_all)} вакансий (проверка обращения к сервису)")
+            self.vacancies_dicts.append(vacancy_dict)
+        #
+        # with open(f'{self.vacancy}_hh_ru.json', 'w', encoding='UTF-8') as file:
+        #     json.dump(self.vacancies_dicts, file, indent=2, ensure_ascii=False)
+        # print(f"Отбор осуществляется из {len(self.vacancies_all)} вакансий (проверка обращения к сервису)")
         return self.vacancies_dicts
+
+
+hh = HH('python developer')
+print(hh.get_request())

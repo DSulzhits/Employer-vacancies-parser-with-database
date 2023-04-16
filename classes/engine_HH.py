@@ -1,4 +1,6 @@
 import requests
+
+
 # import json
 
 
@@ -8,7 +10,8 @@ class HH:
     vacancies = []
     vacancies_dicts = []
 
-    def __init__(self, vacancy):
+    def __init__(self, company=None, vacancy=None):
+        self.company = company
         self.vacancy = vacancy
 
     def get_request(self):
@@ -34,7 +37,8 @@ class HH:
                     self.vacancies_all.append(
                         vacancy)  # добавлено для проверки количества полученных вакансий до отбора
                     if info['items'][vacancy]['salary'] is not None \
-                            and info['items'][vacancy]['salary']['currency'] == "RUR":
+                            and info['items'][vacancy]['salary']['currency'] == "RUR"\
+                            and info['items'][vacancy]['employer']['name'] == self.company:
                         self.vacancies.append([info['items'][vacancy]['employer']['name'],
                                                info['items'][vacancy]['name'],
                                                info['items'][vacancy]['apply_alternate_url'],
@@ -63,8 +67,12 @@ class HH:
         return self.vacancies_dicts
 
 
-hh = HH('python developer')
-hh1 = hh.get_request()
-
+hh_skillbox = HH('Skillbox', 'Python')
+hh1 = hh_skillbox.get_request()
 for row in hh1:
+    print(row)
+
+hh_JetLend = HH('JetLend', 'Python')
+hh2 = hh_JetLend.get_request()
+for row in hh2:
     print(row)

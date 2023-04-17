@@ -67,10 +67,10 @@ class HH:
         return self.vacancies_emp_dicts
 
 
-hh = HH('Skyeng')
-emp = hh.get_employer()
-print(emp)
-vacancies = hh.get_vacancies(emp['id'])
-print(len(vacancies))
-for vacancy_hh in vacancies:
-    print(vacancy_hh)
+# hh = HH('Skyeng')
+# emp = hh.get_employer()
+# print(emp)
+# vacancies = hh.get_vacancies(emp['id'])
+# print(len(vacancies))
+# for vacancy_hh in vacancies:
+#     print(vacancy_hh)

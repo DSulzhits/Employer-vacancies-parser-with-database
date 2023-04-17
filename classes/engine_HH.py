@@ -1,9 +1,5 @@
 import json
-
 import requests
-
-
-# import json
 
 
 class HH:
@@ -77,12 +73,3 @@ class HH:
                     vacancy_dict['requirement'] = vacancy_dict['requirement']
             self.vacancies_emp_dicts.append(vacancy_dict)
         return self.vacancies_emp_dicts
-
-
-hh = HH('Skillbox')
-hh_emp = hh.get_request()
-hh_vac = hh.get_vacancies()
-print(hh_emp)
-print(hh_vac)
-for vac in hh_vac:
-    print(vac)

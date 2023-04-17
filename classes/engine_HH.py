@@ -59,8 +59,8 @@ class HH:
                      vacancy['salary']['from'], vacancy['salary']['to']])
 
         for vacancy in self.vacancies_emp:
-            vacancy_dict = {'name': vacancy[0], 'url': vacancy[1], 'requirement': vacancy[2],
-                            'salary_from': vacancy[3], 'salary_to': vacancy[4]}
+            vacancy_dict = {'employer': self.employer_data['name'], 'vacancy': vacancy[0], 'url': vacancy[1],
+                            'requirement': vacancy[2], 'salary_from': vacancy[3], 'salary_to': vacancy[4]}
             if vacancy_dict['salary_from'] is None:
                 vacancy_dict['salary_from'] = 0
             elif vacancy_dict['salary_to'] is None:

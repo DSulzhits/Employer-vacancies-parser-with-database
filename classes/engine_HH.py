@@ -68,9 +68,10 @@ class HH:
         return vacancies_emp_dicts
 
 
-# hh = HH('skyeng')
-# hh.get_employer()
-# vac = hh.get_vacancies('1122462')
+# hh = HH('Вконтакте')
+# print(hh.get_employer())
+# hh.employers_data
+# vac = hh.get_vacancies('15478')
 # print(len(vac))
 # for v in vac:
 #     print(v)

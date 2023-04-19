@@ -4,6 +4,15 @@ import os
 from dotenv import load_dotenv
 
 
+class ConnectDB:
+    @staticmethod
+    def connect_to_db():
+        load_dotenv()
+        postgres_key = os.getenv('POSTGRESSQL_KEY')
+        conn = psycopg2.connect(host='localhost', database='employers_db', user='postgres', password=postgres_key)
+        return conn
+
+
 class FillDB(HH):
     employers_names = []
 
@@ -30,16 +39,16 @@ class FillDB(HH):
                 vacancies_all.append(vacancy)
         return vacancies_all
 
-    @staticmethod
-    def __connect_to_db():
-        load_dotenv()
-        postgres_key = os.getenv('POSTGRESSQL_KEY')
-        conn = psycopg2.connect(host='localhost', database='employers_db', user='postgres', password=postgres_key)
-        return conn
+    # @staticmethod
+    # def __connect_to_db():
+    #     load_dotenv()
+    #     postgres_key = os.getenv('POSTGRESSQL_KEY')
+    #     conn = psycopg2.connect(host='localhost', database='employers_db', user='postgres', password=postgres_key)
+    #     return conn
 
     def fill_db_employers(self):
         employers_id = []
-        conn = self.__connect_to_db()
+        conn = ConnectDB.connect_to_db()
         employers = self.__get_employers_all()
         try:
             with conn:
@@ -62,7 +71,7 @@ class FillDB(HH):
 
     def fill_db_vacancies(self):
         vacancies_id = []
-        conn = self.__connect_to_db()
+        conn = ConnectDB.connect_to_db()
         vacancies = self.__get_vacancies_all()
         try:
             with conn:
@@ -86,5 +95,5 @@ class FillDB(HH):
 fill_db_unit = FillDB(['skyeng', 'skillbox', 'лаборатория касперского', 'lesta games', 'VK', 'LG Electronics Inc.',
                        'SberTech', 'YADRO', 'Доктор Веб', 'GeekBrains'])
 
-fill_db_unit.fill_db_employers()
-fill_db_unit.fill_db_vacancies()
+# fill_db_unit.fill_db_employers()
+# fill_db_unit.fill_db_vacancies()

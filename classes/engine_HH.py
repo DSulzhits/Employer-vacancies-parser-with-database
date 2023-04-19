@@ -33,7 +33,7 @@ class HH:
         params = {
             'employer_id': employer_id,
             'area': 113,
-            'per_page': 20,
+            'per_page': 100,
             'page': page
         }
         response = requests.get('https://api.hh.ru/vacancies', params)
@@ -45,7 +45,7 @@ class HH:
         """Метод для обработки полученной информации по вакансиям
         range можно задать в любой, но я задал 2 чтобы было быстрее"""
         vacancies_emp_dicts = []
-        for page in range(2):
+        for page in range(10):
             vacancies_data = json.loads(self.__get_page_vacancies(employer_id, page))
             if 'errors' in vacancies_data:
                 return vacancies_data['errors'][0]['value']
@@ -66,3 +66,11 @@ class HH:
                     vacancy_dict['salary_to'] = vacancy_dict['salary_from']
                 vacancies_emp_dicts.append(vacancy_dict)
         return vacancies_emp_dicts
+
+
+# hh = HH('skyeng')
+# hh.get_employer()
+# vac = hh.get_vacancies('1122462')
+# print(len(vac))
+# for v in vac:
+#     print(v)

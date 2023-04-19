@@ -14,15 +14,16 @@ class FillDB(HH):
             self.employers_names.append(self.employer)
 
     @classmethod
-    def get_employers_all(cls):
+    def __get_employers_all(cls):
         for employer in cls.employers_names:
             employer_info = HH(employer)
             employer_info.get_employer()
         return super().employers_data
 
-    def get_vacancies_all(self):
+    @classmethod
+    def __get_vacancies_all(cls):
         vacancies_all = []
-        for employer in self.employers_data:
+        for employer in cls.employers_data:
             emp = HH(employer['name'])
             vacancies_emp = emp.get_vacancies(employer['id'])
             for vacancy in vacancies_emp:
@@ -39,13 +40,12 @@ class FillDB(HH):
     def fill_db_employers(self):
         employers_id = []
         conn = self.__connect_to_db()
-        employers = self.get_employers_all()
+        employers = self.__get_employers_all()
         try:
             with conn:
                 with conn.cursor() as cur:
                     cur.execute("SELECT * FROM employers")
                     rows = cur.fetchall()
-                    print(rows)
                     for row in rows:
                         emp_id, name, url = row
                         employers_id.append(emp_id)
@@ -63,13 +63,12 @@ class FillDB(HH):
     def fill_db_vacancies(self):
         vacancies_id = []
         conn = self.__connect_to_db()
-        vacancies = self.get_vacancies_all()
+        vacancies = self.__get_vacancies_all()
         try:
             with conn:
                 with conn.cursor() as cur:
                     cur.execute("SELECT * FROM vacancies")
                     rows = cur.fetchall()
-                    print(rows)
                     for row in rows:
                         vac_id, vac_name, vac_url, vac_from, vac_to, vac_emp_id = row
                         vacancies_id.append(vac_id)

@@ -7,7 +7,6 @@ class HH:
     employer_dict = {}
     employers_data = []
     vacancies_emp = []
-    vacancies_emp_dicts = []
 
     def __init__(self, employer):
         self.employer = employer
@@ -23,10 +22,9 @@ class HH:
         elif 'items' not in employer:
             return "Нет указанных работодателей"
         else:
-            employer_dict = {'id': employer['items'][0]['id'], 'name': employer['items'][0]['name'],
-                             'alternate_url': employer['items'][0]['alternate_url']}
-            self.employer_dict = employer_dict
-            self.employers_data.append(employer_dict)
+            self.employer_dict = {'id': employer['items'][0]['id'], 'name': employer['items'][0]['name'],
+                                  'alternate_url': employer['items'][0]['alternate_url']}
+            self.employers_data.append(self.employer_dict)
             return self.employer_dict
 
     def __get_page_vacancies(self, employer_id, page):
@@ -35,7 +33,7 @@ class HH:
         params = {
             'employer_id': employer_id,
             'area': 113,
-            'per_page': 100,
+            'per_page': 20,
             'page': page
         }
         response = requests.get('https://api.hh.ru/vacancies', params)
@@ -46,8 +44,11 @@ class HH:
     def get_vacancies(self, employer_id):
         """Метод для обработки полученной информации по вакансиям
         range можно задать в любой, но я задал 2 чтобы было быстрее"""
+        vacancies_emp_dicts = []
         for page in range(2):
             vacancies_data = json.loads(self.__get_page_vacancies(employer_id, page))
+            if 'errors' in vacancies_data:
+                return vacancies_data['errors'][0]['value']
             for vacancy_data in vacancies_data['items']:
                 if vacancy_data['salary'] is None:
                     vacancy_data['salary'] = {}
@@ -58,19 +59,10 @@ class HH:
                                 'url': vacancy_data['apply_alternate_url'],
                                 'salary_from': vacancy_data['salary']['from'],
                                 'salary_to': vacancy_data['salary']['to'],
-                                'employer_id': self.employer_dict['id']}
+                                'employer_id': vacancy_data['employer']['id']}
                 if vacancy_dict['salary_from'] is None:
                     vacancy_dict['salary_from'] = "не указано"
                 elif vacancy_dict['salary_to'] is None:
                     vacancy_dict['salary_to'] = vacancy_dict['salary_from']
-                self.vacancies_emp_dicts.append(vacancy_dict)
-        return self.vacancies_emp_dicts
-
-
-# hh = HH('Skyeng')
-# emp = hh.get_employer()
-# print(emp)
-# vacancies = hh.get_vacancies(emp['id'])
-# print(len(vacancies))
-# for vacancy_hh in vacancies:
-#     print(vacancy_hh)
+                vacancies_emp_dicts.append(vacancy_dict)
+        return vacancies_emp_dicts

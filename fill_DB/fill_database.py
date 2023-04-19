@@ -4,17 +4,30 @@ import os
 from dotenv import load_dotenv
 
 
-class FillDB:
+class FillDB(HH):
+    employers_names = []
+
     def __init__(self, employers_list):
         self.employers_list = employers_list
-
-    def __get_employers(self):
-        load_dotenv()
         for employer in self.employers_list:
+            super().__init__(employer)
+            self.employers_names.append(self.employer)
+
+    @classmethod
+    def get_employers_all(cls):
+        for employer in cls.employers_names:
             employer_info = HH(employer)
             employer_info.get_employer()
-        employers = HH.employers_data
-        return employers
+        return super().employers_data
+
+    def get_vacancies_all(self):
+        vacancies_all = []
+        for employer in self.employers_data:
+            emp = HH(employer['name'])
+            vacancies_emp = emp.get_vacancies(employer['id'])
+            for vacancy in vacancies_emp:
+                vacancies_all.append(vacancy)
+        return vacancies_all
 
     @staticmethod
     def __connect_to_db():
@@ -23,15 +36,16 @@ class FillDB:
         conn = psycopg2.connect(host='localhost', database='employers_db', user='postgres', password=postgres_key)
         return conn
 
-    def fill_db(self):
+    def fill_db_employers(self):
         employers_id = []
         conn = self.__connect_to_db()
-        employers = self.__get_employers()
+        employers = self.get_employers_all()
         try:
             with conn:
                 with conn.cursor() as cur:
                     cur.execute("SELECT * FROM employers")
                     rows = cur.fetchall()
+                    print(rows)
                     for row in rows:
                         emp_id, name, url = row
                         employers_id.append(emp_id)
@@ -46,8 +60,32 @@ class FillDB:
         finally:
             conn.close()
 
+    def fill_db_vacancies(self):
+        vacancies_id = []
+        conn = self.__connect_to_db()
+        vacancies = self.get_vacancies_all()
+        try:
+            with conn:
+                with conn.cursor() as cur:
+                    cur.execute("SELECT * FROM vacancies")
+                    rows = cur.fetchall()
+                    print(rows)
+                    for row in rows:
+                        vac_id, vac_name, vac_url, vac_from, vac_to, vac_emp_id = row
+                        vacancies_id.append(vac_id)
+                    for vacancy in vacancies:
+                        if int(vacancy['id']) not in vacancies_id:
+                            cur.execute('INSERT INTO vacancies VALUES (%s, %s, %s, %s, %s, %s)',
+                                        (vacancy['id'], vacancy['vacancy'], vacancy['url'], vacancy['salary_from'],
+                                         vacancy['salary_to'], vacancy['employer_id']))
+                        else:
+                            print(f"Вакансия {vacancy['vacancy']} id {vacancy['id']} уже существует")
+        finally:
+            conn.close()
+
 
 fill_db_unit = FillDB(['skyeng', 'skillbox', 'лаборатория касперского', 'lesta games', 'VK', 'LG Electronics Inc.',
-         'SberTech', 'YADRO', 'Доктор Веб', 'GeekBrains'])
+                       'SberTech', 'YADRO', 'Доктор Веб', 'GeekBrains'])
 
-fill_db_unit.fill_db()
+fill_db_unit.fill_db_employers()
+fill_db_unit.fill_db_vacancies()

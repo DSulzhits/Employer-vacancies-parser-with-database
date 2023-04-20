@@ -91,8 +91,9 @@ class FillDB(HH):
         finally:
             conn.close()
 
-# fill_db_unit = FillDB(['skyeng', 'skillbox', 'лаборатория касперского', 'lesta games', 'Вконтакте', 'LG Electronics Inc.',
-#                        'SberTech', 'YADRO', 'Доктор Веб', 'GeekBrains'])
+# fill_db_unit = FillDB(
+#     ['skyeng', 'skillbox', 'лаборатория касперского', 'lesta games', 'Вконтакте', 'LG Electronics Inc.',
+#      'SberTech', 'YADRO', 'Доктор Веб', 'GeekBrains'])
 
 # fill_db_unit.fill_db_employers()
 # fill_db_unit.fill_db_vacancies()

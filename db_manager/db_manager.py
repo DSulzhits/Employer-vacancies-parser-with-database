@@ -2,32 +2,8 @@ from fill_DB.fill_database import ConnectDB
 
 
 class DBManager:
-    # @staticmethod
-    # def get_info_employers():
-    #     conn = ConnectDB.connect_to_db()
-    #     try:
-    #         with conn:
-    #             with conn.cursor() as cur:
-    #                 cur.execute("SELECT * FROM employers")
-    #                 companies = cur.fetchall()
-    #     finally:
-    #         conn.close()
-    #     return companies
-
-    # @staticmethod
-    # def get_info_vacancies():
-    #     conn = ConnectDB.connect_to_db()
-    #     try:
-    #         with conn:
-    #             with conn.cursor() as cur:
-    #                 cur.execute("SELECT * FROM vacancies")
-    #                 vacancies_info = cur.fetchall()
-    #     finally:
-    #         conn.close()
-    #     return vacancies_info
-
-    @classmethod
-    def get_companies_and_vacancies_count(cls):
+    @staticmethod
+    def get_companies_and_vacancies_count():
         conn = ConnectDB.connect_to_db()
         employers_vac_list = []
         try:
@@ -47,8 +23,36 @@ class DBManager:
             conn.close()
         return employers_vac_list
 
-    @classmethod
-    def get_avg_salary(cls):
+    @staticmethod
+    def get_all_vacancies():
+        vacancies_data_list = []
+        conn = ConnectDB.connect_to_db()
+        try:
+            with conn:
+                with conn.cursor() as cur:
+                    cur.execute(
+                        """SELECT employer_name, vacancy_name, vacancy_salary_from, vacancy_salary_to, vacancy_url
+                           FROM employers 
+                           INNER JOIN vacancies 
+                           USING(employer_id)"""
+                    )
+                    all_info = cur.fetchall()
+                    for vac_info in all_info:
+                        emp_name, vac_name, vac_from, vac_to, vac_url = vac_info
+                        if vac_from is None:
+                            vac_from = 'не указано'
+                        if vac_to is None:
+                            vac_to = 'не указано'
+                        vacancies_data_list.append(
+                            f"""Работодатель: {emp_name}, вакансия: {vac_name}, 
+зарплата от: {vac_from}, до: {vac_to}
+url: {vac_url}\n""")
+        finally:
+            conn.close()
+        return vacancies_data_list
+
+    @staticmethod
+    def get_avg_salary():
         conn = ConnectDB.connect_to_db()
         try:
             with conn:
@@ -59,8 +63,8 @@ class DBManager:
             conn.close()
         return f"Средняя заработная плата от {avg_salary} рублей"
 
-    @classmethod
-    def get_vacancies_with_higher_salary(cls):
+    @staticmethod
+    def get_vacancies_with_higher_salary():
         salaries_top_list = []
         conn = ConnectDB.connect_to_db()
         try:
@@ -78,8 +82,8 @@ class DBManager:
             conn.close()
         return salaries_top_list
 
-    @classmethod
-    def get_vacancies_with_keyword(cls, keyword):
+    @staticmethod
+    def get_vacancies_with_keyword(keyword):
         vacancies_list = []
         conn = ConnectDB.connect_to_db()
         try:
@@ -101,15 +105,18 @@ class DBManager:
         return vacancies_list
 
 
-db = DBManager
-data = db.get_companies_and_vacancies_count()
+# db = DBManager
+# data = db.get_companies_and_vacancies_count()
 # for d in data:
 #     print(d)
-salary = db.get_avg_salary()
-print(salary)
-vacancies = db.get_vacancies_with_keyword("Python")
+# salary = db.get_avg_salary()
+# print(salary)
+# vacancies = db.get_vacancies_with_keyword("Python")
 # for vac in vacancies:
 #     print(vac)
-top_salary = db.get_vacancies_with_higher_salary()
+# top_salary = db.get_vacancies_with_higher_salary()
 # for top in top_salary:
 #     print(top)
+# all_info = db.get_all_vacancies()
+# for info in all_info:
+#     print(info)

@@ -53,14 +53,30 @@ class DBManager:
         try:
             with conn:
                 with conn.cursor() as cur:
-                    cur.execute(
-                        """SELECT ROUND(AVG(vacancy_salary_from))
-                           FROM vacancies
-                           WHERE vacancy_salary_from IS NOT null""")
+                    cur.execute("SELECT ROUND(AVG(vacancy_salary_from)) FROM vacancies")
                     avg_salary = cur.fetchone()[0]
         finally:
             conn.close()
-        return avg_salary
+        return f"Средняя заработная плата от {avg_salary} рублей"
+
+    @classmethod
+    def get_vacancies_with_higher_salary(cls):
+        salaries_top_list = []
+        conn = ConnectDB.connect_to_db()
+        try:
+            with conn:
+                with conn.cursor() as cur:
+                    cur.execute("""SELECT vacancy_name, vacancy_salary_from
+                                   FROM vacancies
+                                   WHERE vacancy_salary_from > (SELECT AVG(vacancy_salary_from) FROM vacancies) 
+                                   ORDER BY vacancy_salary_from DESC""")
+                    salaries_top = cur.fetchall()
+                    for salary_top in salaries_top:
+                        name, sal_top = salary_top
+                        salaries_top_list.append(f"Вакансия: {name}, заработная плата: {sal_top}")
+        finally:
+            conn.close()
+        return salaries_top_list
 
     @classmethod
     def get_vacancies_with_keyword(cls, keyword):
@@ -87,10 +103,13 @@ class DBManager:
 
 db = DBManager
 data = db.get_companies_and_vacancies_count()
-for d in data:
-    print(d)
+# for d in data:
+#     print(d)
 salary = db.get_avg_salary()
 print(salary)
 vacancies = db.get_vacancies_with_keyword("Python")
-for vac in vacancies:
-    print(vac)
+# for vac in vacancies:
+#     print(vac)
+top_salary = db.get_vacancies_with_higher_salary()
+# for top in top_salary:
+#     print(top)

@@ -52,21 +52,18 @@ class HH:
             for vacancy_data in vacancies_data['items']:
                 if vacancy_data['salary'] is None:
                     vacancy_data['salary'] = {}
-                    vacancy_data['salary']['from'] = "не указано"
-                    vacancy_data['salary']['to'] = "не указано"
+                    vacancy_data['salary']['from'] = None
+                    vacancy_data['salary']['to'] = None
 
                 vacancy_dict = {'id': vacancy_data['id'], 'vacancy': vacancy_data['name'],
                                 'url': vacancy_data['apply_alternate_url'],
                                 'salary_from': vacancy_data['salary']['from'],
                                 'salary_to': vacancy_data['salary']['to'],
                                 'employer_id': vacancy_data['employer']['id']}
-                if vacancy_dict['salary_from'] is None:
-                    vacancy_dict['salary_from'] = "не указано"
-                elif vacancy_dict['salary_to'] is None:
+                if vacancy_dict['salary_to'] is None:
                     vacancy_dict['salary_to'] = vacancy_dict['salary_from']
                 vacancies_emp_dicts.append(vacancy_dict)
         return vacancies_emp_dicts
-
 
 # hh = HH('Вконтакте')
 # print(hh.get_employer())

@@ -28,17 +28,26 @@ class DBManager:
 
     @classmethod
     def get_companies_and_vacancies_count(cls):
-        employers_list = []
-        for company in cls.get_info_employers():
-            vacancies_list = []
-            emp_id, name, url = company
-            for vacancy in cls.get_info_vacancies():
-                vac_id, vac_name, vac_url, vac_from, vac_to, vac_emp_id = vacancy
-                if vac_emp_id == emp_id:
-                    vacancies_list.append(vac_name)
-            vacancies_count = {f'{name}': len(vacancies_list)}
-            employers_list.append(vacancies_count)
-        return employers_list
+        conn = ConnectDB.connect_to_db()
+        employers_vac_list = []
+        try:
+            with conn:
+                with conn.cursor() as cur:
+                    cur.execute(
+                        """SELECT employer_name, COUNT(vacancies) AS vacancy_count 
+                        FROM employers 
+                        INNER JOIN vacancies 
+                        USING(employer_id) 
+                        GROUP BY employer_name 
+                        ORDER BY vacancy_count DESC""")
+                    emp_vac_all = cur.fetchall()
+                    for emp_vac in emp_vac_all:
+                        emp, vac = emp_vac
+                        employers_vac_list.append(f"Работодатель {emp}: число вакансий {vac}")
+        finally:
+            conn.close()
+        return employers_vac_list
+
 
 
 # Работодатель Skyeng id 1122462 уже существует
@@ -57,3 +66,5 @@ class DBManager:
 db = DBManager
 data = db.get_companies_and_vacancies_count()
 print(data)
+for d in data:
+    print(d)

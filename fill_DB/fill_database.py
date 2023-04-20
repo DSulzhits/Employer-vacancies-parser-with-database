@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 
 
 class ConnectDB:
+    """Класс для подключения к Базе данных"""
     @staticmethod
     def connect_to_db():
         load_dotenv()
@@ -14,9 +15,12 @@ class ConnectDB:
 
 
 class FillDB(HH):
+    """Класс для заполнения базы данных, наследуется от HH т.к. обращается к его методам при получении
+    необходимой информации"""
     employers_names = []
 
-    def __init__(self, employers_list):
+    def __init__(self, employers_list: list):
+        """Инициализируется списком передаваемых работодателей"""
         self.employers_list = employers_list
         for employer in self.employers_list:
             super().__init__(employer)
@@ -24,6 +28,7 @@ class FillDB(HH):
 
     @classmethod
     def __get_employers_all(cls):
+        """Метод для получения информации из класса-родителя по работодателям"""
         for employer in cls.employers_names:
             employer_info = HH(employer)
             employer_info.get_employer()
@@ -31,6 +36,7 @@ class FillDB(HH):
 
     @classmethod
     def __get_vacancies_all(cls):
+        """Метод для получения информации из класса-родителя по вакансиям"""
         vacancies_all = []
         for employer in cls.employers_data:
             emp = HH(employer['name'])
@@ -39,14 +45,9 @@ class FillDB(HH):
                 vacancies_all.append(vacancy)
         return vacancies_all
 
-    # @staticmethod
-    # def __connect_to_db():
-    #     load_dotenv()
-    #     postgres_key = os.getenv('POSTGRESSQL_KEY')
-    #     conn = psycopg2.connect(host='localhost', database='employers_db', user='postgres', password=postgres_key)
-    #     return conn
-
     def fill_db_employers(self):
+        """Метод сначала обращается к БД для получения оттуда информации по уже имеющимся работодателям,
+        после чего сравнивает ID если их нет, добавляет, если они уже есть в базе сообщает об этом"""
         employers_id = []
         conn = ConnectDB.connect_to_db()
         employers = self.__get_employers_all()
@@ -70,6 +71,8 @@ class FillDB(HH):
             conn.close()
 
     def fill_db_vacancies(self):
+        """Метод сначала обращается к БД для получения оттуда информации по уже имеющимся вакансиям,
+         после чего сравнивает ID если их нет, добавляет, если они уже есть в базе сообщает об этом"""
         vacancies_id = []
         conn = ConnectDB.connect_to_db()
         vacancies = self.__get_vacancies_all()
@@ -90,10 +93,3 @@ class FillDB(HH):
                             print(f"Вакансия {vacancy['vacancy']} id {vacancy['id']} уже существует")
         finally:
             conn.close()
-
-# fill_db_unit = FillDB(
-#     ['skyeng', 'skillbox', 'лаборатория касперского', 'lesta games', 'Вконтакте', 'LG Electronics Inc.',
-#      'SberTech', 'YADRO', 'Доктор Веб', 'GeekBrains'])
-
-# fill_db_unit.fill_db_employers()
-# fill_db_unit.fill_db_vacancies()

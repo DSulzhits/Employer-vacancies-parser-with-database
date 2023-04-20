@@ -1,3 +1,5 @@
+--- Код для создания таблиц в PGAdmin
+
 CREATE TABLE employers
 (
 	employer_id int PRIMARY KEY,

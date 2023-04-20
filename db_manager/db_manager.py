@@ -2,8 +2,11 @@ from fill_DB.fill_database import ConnectDB
 
 
 class DBManager:
+    """Класс для работы с БД посредством SQL запросов запросам"""
+
     @staticmethod
     def get_companies_and_vacancies_count():
+        """Получает список всех компаний и количество вакансий у каждой компании."""
         conn = ConnectDB.connect_to_db()
         employers_vac_list = []
         try:
@@ -25,6 +28,8 @@ class DBManager:
 
     @staticmethod
     def get_all_vacancies():
+        """Получает список всех вакансий с указанием названия компании,
+        названия вакансии и зарплаты и ссылки на вакансию."""
         vacancies_data_list = []
         conn = ConnectDB.connect_to_db()
         try:
@@ -50,6 +55,7 @@ url: {vac_url}\n""")
 
     @staticmethod
     def get_avg_salary():
+        """Получает среднюю зарплату от, по вакансиям (среди тех где она указана)."""
         conn = ConnectDB.connect_to_db()
         try:
             with conn:
@@ -62,6 +68,7 @@ url: {vac_url}\n""")
 
     @staticmethod
     def get_vacancies_with_higher_salary():
+        """получает список всех вакансий, у которых зарплата выше средней по всем вакансиям."""
         salaries_top_list = []
         conn = ConnectDB.connect_to_db()
         try:
@@ -81,6 +88,7 @@ url: {vac_url}\n""")
 
     @staticmethod
     def get_vacancies_with_keyword(keyword):
+        """Получает список всех вакансий, в названии которых содержатся переданные в метод слова, например “python”"""
         vacancies_list = []
         conn = ConnectDB.connect_to_db()
         try:
@@ -106,19 +114,3 @@ def format_salary(salary_from, salary_to):
     if salary_to is None:
         salary_to = 'не указано'
     return salary_from, salary_to
-
-# db = DBManager
-# data = db.get_companies_and_vacancies_count()
-# for d in data:
-#     print(d)
-# salary = db.get_avg_salary()
-# print(salary)
-# vacancies = db.get_vacancies_with_keyword("Python")
-# for vac in vacancies:
-#     print(vac)
-# top_salary = db.get_vacancies_with_higher_salary()
-# for top in top_salary:
-#     print(top)
-# all_info = db.get_all_vacancies()
-# for info in all_info:
-#     print(info)

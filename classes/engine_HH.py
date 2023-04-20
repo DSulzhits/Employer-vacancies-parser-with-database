@@ -43,7 +43,7 @@ class HH:
 
     def get_vacancies(self, employer_id):
         """Метод для обработки полученной информации по вакансиям
-        range можно задать в любой, но я задал 2 чтобы было быстрее"""
+        range можно задать любой"""
         vacancies_emp_dicts = []
         for page in range(10):
             vacancies_data = json.loads(self.__get_page_vacancies(employer_id, page))
@@ -64,11 +64,3 @@ class HH:
                     vacancy_dict['salary_to'] = vacancy_dict['salary_from']
                 vacancies_emp_dicts.append(vacancy_dict)
         return vacancies_emp_dicts
-
-# hh = HH('Вконтакте')
-# print(hh.get_employer())
-# hh.employers_data
-# vac = hh.get_vacancies('15478')
-# print(len(vac))
-# for v in vac:
-#     print(v)

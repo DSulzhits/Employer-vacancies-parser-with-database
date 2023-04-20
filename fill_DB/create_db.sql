@@ -10,7 +10,7 @@ CREATE TABLE vacancies
 	vacancy_id int PRIMARY KEY,
 	vacancy_name varchar(100),
 	vacancy_url varchar(200),
-	vacancy_salary_from varchar(50),
-	vacancy_salary_to varchar(50),
+	vacancy_salary_from int,
+	vacancy_salary_to int,
 	employer_id int REFERENCES employers(employer_id)
 );

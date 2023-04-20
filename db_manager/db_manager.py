@@ -38,14 +38,11 @@ class DBManager:
                     )
                     all_info = cur.fetchall()
                     for vac_info in all_info:
-                        emp_name, vac_name, vac_from, vac_to, vac_url = vac_info
-                        if vac_from is None:
-                            vac_from = 'не указано'
-                        if vac_to is None:
-                            vac_to = 'не указано'
+                        emp_name, vac_name, vac_sal_from, vac_sal_to, vac_url = vac_info
+                        form_sal_from, form_sal_to = format_salary(vac_sal_from, vac_sal_to)
                         vacancies_data_list.append(
                             f"""Работодатель: {emp_name}, вакансия: {vac_name}, 
-зарплата от: {vac_from}, до: {vac_to}
+зарплата от: {form_sal_from}, до: {form_sal_to}
 url: {vac_url}\n""")
         finally:
             conn.close()
@@ -95,15 +92,20 @@ url: {vac_url}\n""")
                     vacancies_keyword = cur.fetchall()
                     for vacancy in vacancies_keyword:
                         name, url, sal_from, sal_to = vacancy
-                        if sal_from is None:
-                            sal_from = 'не указано'
-                        if sal_to is None:
-                            sal_to = 'не указано'
-                        vacancies_list.append(f"Вакансия: {name}, url: {url}, зарплата от: {sal_from}, до: {sal_to}")
+                        form_sal_from, form_sal_to = format_salary(sal_from, sal_to)
+                        vacancies_list.append(
+                            f"Вакансия: {name}, url: {url}, зарплата от: {form_sal_from}, до: {form_sal_to}")
         finally:
             conn.close()
         return vacancies_list
 
+
+def format_salary(salary_from, salary_to):
+    if salary_from is None:
+        salary_from = 'не указано'
+    if salary_to is None:
+        salary_to = 'не указано'
+    return salary_from, salary_to
 
 # db = DBManager
 # data = db.get_companies_and_vacancies_count()

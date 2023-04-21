@@ -13,10 +13,13 @@ def main():
     user_input_vac = input("Введите имя таблицы с вакансиями: ")
     tables_creator.create_vacancies(user_input_vac)
     print(f"""Программа позволяет ознакомиться с информацией по наличию вакансий у следующих
-    работодателей {', '.join(employers)}""")
+работодателей {', '.join(employers)}""")
     fill_db = FillDB(employers)
     fill_db.fill_db_employers(user_input_emp)
-    fill_db.fill_db_vacancies(user_input_vac)
+    try:
+        fill_db.fill_db_vacancies(user_input_vac)
+    except TypeError:
+        print("Данные не получены")
     db_manager = DBManager
     data = db_manager.get_companies_and_vacancies_count()
     for d in data:

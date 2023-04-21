@@ -1,9 +1,14 @@
+from fill_DB.create_tables import TablesCreator
 from fill_DB.fill_database import FillDB
 from db_manager.db_manager import DBManager
 
 
+
 def main():
     """Код для проверки работоспособности программы"""
+    tables_creator = TablesCreator
+    tables_creator.create_employers()
+    tables_creator.create_vacancies()
     employers = ['skyeng', 'skillbox', 'лаборатория касперского', 'lesta games', 'Вконтакте', 'LG Electronics Inc.',
                  'SberTech', 'YADRO', 'Доктор Веб', 'GeekBrains']
     fill_db = FillDB(employers)

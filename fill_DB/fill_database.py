@@ -49,7 +49,7 @@ class FillDB(HH):
 
     def fill_db_employers(self, table_name: str):
         """Метод заполняет таблицу данными о работодателях, если возникает ошибка
-        (что ID такого работодателя уже существует) выводит сообщение об этом"""
+        (что ID такого работодателя уже существует) идет дальше"""
         conn = ConnectDB.connect_to_db()
         employers = self.__get_employers_all()
         try:
@@ -62,26 +62,27 @@ class FillDB(HH):
                                          employer['name'],
                                          employer['alternate_url']))
                 except psycopg2.errors.UniqueViolation:
-                    print(f"Работодатель {employer['name']} id {employer['id']} уже существует")
+                    continue
         except psycopg2.errors.UndefinedTable:
             print(f"Таблица {table_name} не найдена")
         finally:
             conn.close()
 
     def fill_db_vacancies(self, table_name: str):
-        """Метод сначала обращается к БД для получения оттуда информации по уже имеющимся вакансиям,
-         после чего сравнивает ID если их нет, добавляет, если они уже есть в базе сообщает об этом"""
+        """Метод заполняет таблицу данными о вакансиях, если возникает ошибка
+         (что ID такой работодателя уже существует) идет дальше"""
         conn = ConnectDB.connect_to_db()
         vacancies = self.__get_vacancies_all()
         try:
             for vacancy in vacancies:
                 try:
-                    with conn.cursor() as cur:
-                        cur.execute(f'INSERT INTO {table_name} VALUES (%s, %s, %s, %s, %s, %s)',
-                                    (vacancy['id'], vacancy['vacancy'], vacancy['url'], vacancy['salary_from'],
-                                     vacancy['salary_to'], vacancy['employer_id']))
+                    with conn:
+                        with conn.cursor() as cur:
+                            cur.execute(f'INSERT INTO {table_name} VALUES (%s, %s, %s, %s, %s, %s)',
+                                        (vacancy['id'], vacancy['vacancy'], vacancy['url'], vacancy['salary_from'],
+                                         vacancy['salary_to'], vacancy['employer_id']))
                 except psycopg2.errors.UniqueViolation:
-                    print(f"Вакансия {vacancy['vacancy']} id {vacancy['id']} уже существует")
+                    continue
         except psycopg2.errors.UndefinedTable:
             print(f"Таблица {table_name} не найдена")
         finally:

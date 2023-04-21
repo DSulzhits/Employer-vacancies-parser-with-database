@@ -5,17 +5,17 @@ class DBManager:
     """Класс для работы с БД посредством SQL запросов запросам"""
 
     @staticmethod
-    def get_companies_and_vacancies_count():
+    def get_companies_and_vacancies_count(table_name_emp: str, table_name_vac:str):
         """Получает список всех компаний и количество вакансий у каждой компании."""
         conn = ConnectDB.connect_to_db()
         employers_vac_list = []
         try:
             with conn:
                 with conn.cursor() as cur:
-                    cur.execute("""SELECT employer_name, COUNT(vacancies) AS vacancy_count 
-                                   FROM employers 
-                                   INNER JOIN vacancies 
-                                   USING(employer_id) 
+                    cur.execute(f"""SELECT employer_name, COUNT({table_name_vac}) AS vacancy_count 
+                                   FROM {table_name_emp} 
+                                   INNER JOIN {table_name_vac} 
+                                   USING(employer_id)
                                    GROUP BY employer_name 
                                    ORDER BY vacancy_count DESC""")
                     emp_vac_all = cur.fetchall()
@@ -27,7 +27,7 @@ class DBManager:
         return employers_vac_list
 
     @staticmethod
-    def get_all_vacancies():
+    def get_all_vacancies(table_name_emp: str, table_name_vac: str):
         """Получает список всех вакансий с указанием названия компании,
         названия вакансии и зарплаты и ссылки на вакансию."""
         vacancies_data_list = []
@@ -36,9 +36,9 @@ class DBManager:
             with conn:
                 with conn.cursor() as cur:
                     cur.execute(
-                        """SELECT employer_name, vacancy_name, vacancy_salary_from, vacancy_salary_to, vacancy_url
-                           FROM employers 
-                           INNER JOIN vacancies 
+                        f"""SELECT employer_name, vacancy_name, vacancy_salary_from, vacancy_salary_to, vacancy_url
+                           FROM {table_name_emp} 
+                           INNER JOIN {table_name_vac} 
                            USING(employer_id)"""
                     )
                     all_info = cur.fetchall()
@@ -54,29 +54,29 @@ url: {vac_url}\n""")
         return vacancies_data_list
 
     @staticmethod
-    def get_avg_salary():
+    def get_avg_salary(table_name_vac: str):
         """Получает среднюю зарплату от, по вакансиям (среди тех где она указана)."""
         conn = ConnectDB.connect_to_db()
         try:
             with conn:
                 with conn.cursor() as cur:
-                    cur.execute("SELECT ROUND(AVG(vacancy_salary_from)) FROM vacancies")
+                    cur.execute(f"SELECT ROUND(AVG(vacancy_salary_from)) FROM {table_name_vac}")
                     avg_salary = cur.fetchone()[0]
         finally:
             conn.close()
         return f"Средняя заработная плата от {avg_salary} рублей"
 
     @staticmethod
-    def get_vacancies_with_higher_salary():
-        """получает список всех вакансий, у которых зарплата выше средней по всем вакансиям."""
+    def get_vacancies_with_higher_salary(table_name_vac: str):
+        """Получает список всех вакансий, у которых зарплата выше средней по всем вакансиям."""
         salaries_top_list = []
         conn = ConnectDB.connect_to_db()
         try:
             with conn:
                 with conn.cursor() as cur:
-                    cur.execute("""SELECT vacancy_name, vacancy_salary_from
-                                   FROM vacancies
-                                   WHERE vacancy_salary_from > (SELECT AVG(vacancy_salary_from) FROM vacancies) 
+                    cur.execute(f"""SELECT vacancy_name, vacancy_salary_from
+                                   FROM {table_name_vac}
+                                   WHERE vacancy_salary_from > (SELECT AVG(vacancy_salary_from) FROM {table_name_vac}) 
                                    ORDER BY vacancy_salary_from DESC""")
                     salaries_top = cur.fetchall()
                     for salary_top in salaries_top:
@@ -87,7 +87,7 @@ url: {vac_url}\n""")
         return salaries_top_list
 
     @staticmethod
-    def get_vacancies_with_keyword(keyword: str):
+    def get_vacancies_with_keyword(table_name_vac: str, keyword: str):
         """Получает список всех вакансий, в названии которых содержатся переданные в метод слова, например “python”"""
         vacancies_list = []
         conn = ConnectDB.connect_to_db()
@@ -95,7 +95,8 @@ url: {vac_url}\n""")
             with conn:
                 with conn.cursor() as cur:
                     cur.execute(
-                        f"""SELECT vacancy_name, vacancy_url, vacancy_salary_from, vacancy_salary_to FROM vacancies
+                        f"""SELECT vacancy_name, vacancy_url, vacancy_salary_from, vacancy_salary_to 
+                            FROM {table_name_vac}
                             WHERE vacancy_name LIKE '%{keyword}%'""")
                     vacancies_keyword = cur.fetchall()
                     for vacancy in vacancies_keyword:

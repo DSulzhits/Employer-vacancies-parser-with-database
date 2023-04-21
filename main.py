@@ -21,18 +21,18 @@ def main():
     except TypeError:
         print("Данные не получены")
     db_manager = DBManager
-    data = db_manager.get_companies_and_vacancies_count()
+    data = db_manager.get_companies_and_vacancies_count(user_input_emp, user_input_vac)
     for d in data:
         print(d)
-    all_info = db_manager.get_all_vacancies()
+    all_info = db_manager.get_all_vacancies(user_input_emp, user_input_vac)
     for info in all_info:
         print(info)
-    salary = db_manager.get_avg_salary()
+    salary = db_manager.get_avg_salary(user_input_vac)
     print(salary)
-    top_salary = db_manager.get_vacancies_with_higher_salary()
+    top_salary = db_manager.get_vacancies_with_higher_salary(user_input_vac)
     for top in top_salary:
         print(top)
-    vacancies = db_manager.get_vacancies_with_keyword("Python")
+    vacancies = db_manager.get_vacancies_with_keyword(user_input_vac, "Python")
     for vac in vacancies:
         print(vac)
 

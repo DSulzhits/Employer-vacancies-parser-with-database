@@ -87,7 +87,7 @@ url: {vac_url}\n""")
         return salaries_top_list
 
     @staticmethod
-    def get_vacancies_with_keyword(keyword):
+    def get_vacancies_with_keyword(keyword: str):
         """Получает список всех вакансий, в названии которых содержатся переданные в метод слова, например “python”"""
         vacancies_list = []
         conn = ConnectDB.connect_to_db()

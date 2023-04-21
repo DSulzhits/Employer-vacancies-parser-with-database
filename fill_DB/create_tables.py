@@ -40,6 +40,5 @@ class TablesCreator:
                         REFERENCES employers(employer_id));""")
         except psycopg2.errors.DuplicateTable:
             print(f"Таблица с таким именем найдена, считываю данные")
-
         finally:
             conn.close()

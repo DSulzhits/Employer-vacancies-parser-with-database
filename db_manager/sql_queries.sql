@@ -3,18 +3,18 @@ FROM employers
 INNER JOIN vacancies
 USING(employer_id)
 GROUP BY employer_name
-ORDER BY vacancy_count DESC
+ORDER BY vacancy_count DESC;
 
 SELECT employer_name, vacancy_name, vacancy_salary_from, vacancy_salary_to, vacancy_url
 FROM employers
 INNER JOIN vacancies
 USING(employer_id)
 WHERE vacancy_salary_from IS NOT null
-ORDER BY vacancy_salary_from DESC
+ORDER BY vacancy_salary_from DESC;
 
 
 
-select * from vacancies
+select * from vacancies;
 
 CREATE TABLE vacancies
 (

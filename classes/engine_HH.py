@@ -31,7 +31,7 @@ class HH:
         """Метод для получения всех вакансий исходя из id работодателя"""
         self.employer_id = employer_id
         params = {
-            'employer_id': employer_id,
+            'employer_id': self.employer_id,
             'area': 113,
             'per_page': 100,
             'page': page
@@ -64,3 +64,8 @@ class HH:
                     vacancy_dict['salary_to'] = vacancy_dict['salary_from']
                 vacancies_emp_dicts.append(vacancy_dict)
         return vacancies_emp_dicts
+
+
+hh = HH('skyeng')
+print(hh.get_employer())
+print(hh.get_vacancies('1122462'))

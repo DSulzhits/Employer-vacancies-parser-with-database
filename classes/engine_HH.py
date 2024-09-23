@@ -66,6 +66,7 @@ class HH:
         return vacancies_emp_dicts
 
 
-hh = HH('skyeng')
-print(hh.get_employer())
-print(hh.get_vacancies('1122462'))
+# if __name__ == "__main__":
+#     hh = HH('skyeng')
+#     print(hh.get_employer())
+#     print(hh.get_vacancies('1122462'))

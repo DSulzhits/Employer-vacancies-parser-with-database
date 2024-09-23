@@ -6,7 +6,7 @@ from db_manager.db_manager import DBManager
 def main():
     """Код для проверки работоспособности программы"""
     employers = ['skyeng', 'skillbox', 'лаборатория касперского', 'lesta games', 'Вконтакте', 'LG Electronics Inc.',
-                 'SberTech', 'YADRO', 'Доктор Веб', 'GeekBrains']
+                 'SberTech', 'YADRO', 'Доктор Веб']
     user_input_emp = input("Введите имя таблицы с работодателями: ")
     tables_creator = TablesCreator
     tables_creator.create_employers(user_input_emp)
@@ -32,7 +32,7 @@ def main():
     top_salary = db_manager.get_vacancies_with_higher_salary(user_input_vac)
     for top in top_salary:
         print(top)
-    vacancies = db_manager.get_vacancies_with_keyword(user_input_vac, "Python")
+    vacancies = db_manager.get_vacancies_with_keyword(user_input_vac, "Оператор")
     for vac in vacancies:
         print(vac)
 

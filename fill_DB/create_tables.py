@@ -1,5 +1,4 @@
 import psycopg2.errors
-
 from fill_DB.fill_database import ConnectDB
 
 

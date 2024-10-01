@@ -8,7 +8,7 @@ DATABASE = os.getenv('MS_SQL_DATABASE')
 USER = os.getenv('MS_SQL_USER')
 PASSWORD = os.getenv('MS_SQL_KEY')
 
-"""SimpleConnection"""
+# """SimpleConnection"""
 # connectionString = f'''DRIVER={{SQL Server}};
 #                                SERVER={SERVER};
 #                                DATABASE={DATABASE};
@@ -24,21 +24,21 @@ connectionString = f'''DRIVER={{ODBC Driver 17 for SQL Server}};
 """CreateDBParams"""
 SQL_COMMAND = r"""
 CREATE DATABASE TestDatabase
-ON 
-( 
+ON
+(
   NAME = TestDatabase_data,
   FILENAME = 'T:\Program Files\Microsoft SQL Server\MSSQL16.SQLEXPRESS\MSSQL\DATA\TestDatabase_data.mdf',
   SIZE = 10MB,
   MAXSIZE = 100GB,
-  FILEGROWTH = 5% 
+  FILEGROWTH = 5%
  )
 LOG ON
-( 
+(
   NAME = 'TestDatabase_log',
   FILENAME = 'T:\Program Files\Microsoft SQL Server\MSSQL16.SQLEXPRESS\MSSQL\DATA\TestDatabase_data.ldf',
   SIZE = 5MB,
   MAXSIZE = 10GB,
-  FILEGROWTH = 5% 
+  FILEGROWTH = 5%
  )"""
 conn = pyodbc.connect(connectionString)
 conn.autocommit = True
@@ -87,6 +87,7 @@ SQL_QUERY = """
 SELECT LastName, FirstName
 FROM Students
 """
+records_list = []
 conn = pyodbc.connect(connectionString)
 conn.autocommit = True
 cursor = conn.cursor()
@@ -102,5 +103,9 @@ else:
     print("Data Recieved")
     for record in records:
         print(f"{record.LastName}\t{record.FirstName}")
+        result = {"last_name": record.LastName, "first_name": record.FirstName}
+        records_list.append(result)
 finally:
     conn.close()
+
+print(records_list)
